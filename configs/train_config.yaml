@@ -1,0 +1,42 @@
+dataset:
+  type: football              # soccertrack or football
+  view_type: top_view         # only used for soccertrack
+
+paths:
+  data_dir: ./data
+  soccertrack:
+    dataset_zip: ./data/soccertrack.zip
+    dataset_dir: ./data/soccertrack
+    output_dir: ./output_yolo_soccertrack
+  football:
+    dataset_dir: ./data/combined_dataset # path to the football dataset directory, either ./data/football_player_detection or ./data/combined_dataset (handheld + roboflow)
+    output_dir: ./models_combined_dataset/output_yolo_football
+
+training:
+  model: yolov8s              # yolov8s, yolov8n, yolo26n, rtdetr-l, rtdetr-x
+  epochs: 50
+  img_size: 640
+  batch: 16
+  resume: false
+  checkpoint: null
+
+augmentation:
+  rotate: 10.0
+  translate: 0.2
+  mosaic: 0.3
+  scale: 0.5
+  mixup: 0.0
+  close_mosaic_ratio: 0.5     # % of training where mosaic is disabled
+
+runtime:
+  skip_setup: false
+  skip_data_prep: false
+  validate: true
+  visualize: false
+  make_annotations: false
+
+export: 
+  active: true
+  format: both
+  conf_thresh: 0.5
+  iou_thresh: 0.7

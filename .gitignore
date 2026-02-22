@@ -209,12 +209,17 @@ __marimo__/
 .idea
 *.csv
 
-data/
+data/*
+!data/handheld_dataset/
+data/handheld_dataset/*
+!data/handheld_dataset/*.py
+!data/handheld_dataset/*.txt
 output/
 RT-DETR/
 
-# Ignore all .yaml files
+# Ignore all .yaml files, but config yamls
 *.yaml
+!configs/*.yaml
 
 # Ignore yolo model weights
 *.pt
@@ -223,10 +228,9 @@ RT-DETR/
 runs/
 
 # Ignore *.jpg and *.png files from training runs
-models/**/*.jpg
-models/**/*.png
+models/*
 
-models/output_yolo_football/rtdetr-l/*
-models/output_yolo_football/yolo26n/*
+models_without_rescaling_aug/*
+output_without_rescaling_aug/*
 
 .DS_Store

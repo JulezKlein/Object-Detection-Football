@@ -1,0 +1,4 @@
+keio_sensyu_wide_008
+keio_sensyu_wide_024
+keio_sensye_tight_008
+keio_sensye_tight_024
