@@ -53,14 +53,18 @@ def main():
     parser.add_argument("--test-dir", type=str, default="data/football_player_detection/test/images",
                         help="Path to test images folder")
     parser.add_argument("--img-size", type=int, default=640)
-    parser.add_argument("--save-dir", type=str, default="runs/detect/test_results")
-    parser.add_argument("--visualize-index", type=int, default=0, help="Index of sample to visualize (0-based)")
-    parser.add_argument("--use-yolo", action="store_true", help="Use ultralytics YOLO class for inference (if available) instead of raw ONNXRuntime or CoreML.")
+    parser.add_argument("--save-dir", type=str,
+                        default="runs/detect/test_results")
+    parser.add_argument("--visualize-index", type=int, default=0,
+                        help="Index of sample to visualize (0-based)")
+    parser.add_argument("--use-yolo", action="store_true",
+                        help="Use ultralytics YOLO class for inference (if available) instead of raw ONNXRuntime or CoreML.")
     args = parser.parse_args()
 
     os.makedirs(args.save_dir, exist_ok=True)
 
-    image_paths = sorted(glob.glob(os.path.join(args.test_dir, "*.jpg")) + glob.glob(os.path.join(args.test_dir, "*.png")))
+    image_paths = sorted(glob.glob(os.path.join(
+        args.test_dir, "*.jpg")) + glob.glob(os.path.join(args.test_dir, "*.png")))
     if not image_paths:
         print(f"No images found in {args.test_dir}")
         return
@@ -102,21 +106,25 @@ def main():
 
                     if idx == args.visualize_index and len(xyxy) > 0:
                         img = Image.open(p).convert("RGB")
-                        img = draw_boxes_on_image(img, xyxy, scores=conf, classes=cls)
-                        out_viz = os.path.join(args.save_dir, f"visualized_{args.format}")
+                        img = draw_boxes_on_image(
+                            img, xyxy, scores=conf, classes=cls)
+                        out_viz = os.path.join(
+                            args.save_dir, f"visualized_{args.format}")
                         img.save(out_viz)
                         print(f"Saved visualization: {out_viz}")
                         visualized = True
 
                 except Exception as e:
-                    print(f"Warning: failed to parse ultralytics results for {p}: {e}")
+                    print(
+                        f"Warning: failed to parse ultralytics results for {p}: {e}")
 
         else:
             # Fallback to onnxruntime inference (raw outputs)
             try:
                 import onnxruntime as ort
             except Exception:
-                print("onnxruntime not available and ultralytics not importable. Cannot run ONNX test.")
+                print(
+                    "onnxruntime not available and ultralytics not importable. Cannot run ONNX test.")
                 return
 
             sess = ort.InferenceSession(args.model)
@@ -160,15 +168,19 @@ def main():
                             # map coords from model size back to original
                             scale_x = orig_w / args.img_size
                             scale_y = orig_h / args.img_size
-                            boxes.append([x1 * scale_x, y1 * scale_y, x2 * scale_x, y2 * scale_y])
+                            boxes.append(
+                                [x1 * scale_x, y1 * scale_y, x2 * scale_x, y2 * scale_y])
                             scores.append(conf)
                             classes.append(cls)
 
                         img_draw = Image.open(p).convert("RGB")
-                        img_draw = draw_boxes_on_image(img_draw, boxes, scores=scores, classes=classes)
-                        out_viz = os.path.join(args.save_dir, f"visualized_onnx_{Path(p).name}")
+                        img_draw = draw_boxes_on_image(
+                            img_draw, boxes, scores=scores, classes=classes)
+                        out_viz = os.path.join(
+                            args.save_dir, f"visualized_onnx_{Path(p).name}")
                         img_draw.save(out_viz)
-                        print(f"Saved visualization (onnx fallback): {out_viz}")
+                        print(
+                            f"Saved visualization (onnx fallback): {out_viz}")
                         visualized = True
 
     elif args.format == "coreml":
@@ -199,17 +211,18 @@ def main():
             if idx != args.visualize_index or visualized:
                 continue
 
-            print("📤 Core ML output keys:", outputs.keys())
+            print("Core ML output keys:", outputs.keys())
 
             if "coordinates" not in outputs or "confidence" not in outputs:
-                print("❌ Unexpected Core ML outputs")
+                print("Unexpected Core ML outputs")
                 continue
 
-            coords = np.asarray(outputs["coordinates"])   # (N, 4) xywh normalized
+            # (N, 4) xywh normalized
+            coords = np.asarray(outputs["coordinates"])
             scores = np.asarray(outputs["confidence"])    # (N, C)
 
             if coords.shape[0] == 0:
-                print("⚠️ No detections (N=0)")
+                print("No detections (N=0)")
                 visualized = True
                 continue
 
@@ -236,7 +249,7 @@ def main():
                 vis_classes.append(int(cls))
 
             if not boxes_xyxy:
-                print("⚠️ All detections filtered by confidence threshold")
+                print("All detections filtered by confidence threshold")
                 visualized = True
                 continue
 
@@ -255,15 +268,16 @@ def main():
                 f"visualized_coreml_{Path(p).name}"
             )
             img_draw.save(out_viz)
-            print(f"✅ Saved visualization (coreml) at original size: {out_viz}")
+            print(
+                f"Saved visualization (coreml) at original size: {out_viz}")
             visualized = True
-
 
     # Summary of timings
     if times:
         times_arr = np.array(times)
         print(f"\nRan {len(times_arr)} inferences")
-        print(f"Min: {times_arr.min():.2f} ms | Mean: {times_arr.mean():.2f} ms | Max: {times_arr.max():.2f} ms")
+        print(
+            f"Min: {times_arr.min():.2f} ms | Mean: {times_arr.mean():.2f} ms | Max: {times_arr.max():.2f} ms")
     else:
         print("No timings recorded")
 

@@ -59,7 +59,7 @@ def load_config(config_path: str):
     else:
         raise ValueError("Unknown dataset type")
 
-    print(f"\n✓ Loaded config: {config_path}")
+    print(f"\n Loaded config: {config_path}")
     print(f"  Dataset: {dataset_type}")
     print(f"  Output: {CONFIG['output_dir']}")
 
@@ -76,7 +76,8 @@ def setup_environment():
 
 
 def install_dependencies():
-    subprocess.run([sys.executable, "-m", "pip", "install", "--upgrade", "pip", "-q"], check=True)
+    subprocess.run([sys.executable, "-m", "pip", "install",
+                   "--upgrade", "pip", "-q"], check=True)
     subprocess.run(
         [sys.executable, "-m", "pip", "install",
          "ultralytics", "pandas", "pillow", "tqdm", "opencv-python", "matplotlib", "omegaconf", "-q"],
@@ -95,7 +96,8 @@ def unzip_dataset():
         print("✓ Dataset exists")
         return
 
-    subprocess.run(["unzip", "-q", CONFIG["dataset_zip"], "-d", CONFIG["dataset_dir"]], check=True)
+    subprocess.run(["unzip", "-q", CONFIG["dataset_zip"],
+                   "-d", CONFIG["dataset_dir"]], check=True)
 
 
 def prepare_dataset():
@@ -106,7 +108,8 @@ def prepare_dataset():
     view_type = CONFIG["view_type"]
 
     video_root = os.path.join(CONFIG["dataset_dir"], view_type, "videos")
-    annotation_root = os.path.join(CONFIG["dataset_dir"], view_type, "annotations")
+    annotation_root = os.path.join(
+        CONFIG["dataset_dir"], view_type, "annotations")
 
     prep_dir = CONFIG["prep_dir"]
     frames = os.path.join(prep_dir, "frames")
@@ -116,7 +119,8 @@ def prepare_dataset():
         extract_frames_from_videos(video_root, frames, frame_stride=1)
 
     if not os.path.isdir(yolo):
-        convert_soccertrack_csvs_to_yolo(annotation_root, frames, yolo, train_split=0.8)
+        convert_soccertrack_csvs_to_yolo(
+            annotation_root, frames, yolo, train_split=0.8)
 
 
 # =========================
@@ -147,7 +151,7 @@ def start_training():
         device=device,
         project=CONFIG["output_dir"],
         name=model_name,
-        patience=10,
+        patience=0,
         save=True,
         augment=True,
         deterministic=False,
@@ -161,10 +165,10 @@ def start_training():
         close_mosaic=close_mosaic,
 
         amp=False,
-        max_det=25
+        max_det=30
     )
 
-    print("✅ Training complete!")
+    print("Training complete!")
 
 
 # =========================
@@ -172,7 +176,8 @@ def start_training():
 # =========================
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--config", type=str, default="configs/train_config.yaml", help="Path to YAML config")
+    parser.add_argument(
+        "--config", type=str, default="configs/train_config.yaml", help="Path to YAML config")
 
     args = parser.parse_args()
 
@@ -189,6 +194,18 @@ def main():
         prepare_dataset()
 
     start_training()
+    
+    export = CONFIG.get("export", {})
+    if export.get("export", False):
+        from utils.export_yolo import run_export
+        run_export(
+            weights=os.path.join(CONFIG["output_dir"], CONFIG["training"]["model"], "weights", "best.pt"),
+            img_size=CONFIG["training"]["img_size"],
+            conf_thresh=export.get("conf_thresh", 0.5),
+            iou_thresh=export.get("iou_thresh", 0.7),
+            export_format=export.get("format", "both"),
+            data_yaml=CONFIG["yaml_path"]
+        )
 
 
 if __name__ == "__main__":

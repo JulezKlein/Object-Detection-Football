@@ -1,10 +1,10 @@
-# OmegaConf Configuration for Soccer Track Inference
+# OmegaConf Configuration for Ultralytics Inference
 # Model paths with fallback logic
 
 # Model Configuration
 model:
   # Base model directory
-  base_path: models/output_yolo_football/yolov8s/weights
+  base_path: models/output_combined_dataset/yolov8s2/weights
   
   # Model paths in fallback order
   model_paths:

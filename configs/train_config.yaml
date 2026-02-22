@@ -9,12 +9,12 @@ paths:
     dataset_dir: ./data/soccertrack
     output_dir: ./output_yolo_soccertrack
   football:
-    dataset_dir: ./data/football_player_detection
-    output_dir: ./models/output_yolo_football
+    dataset_dir: ./data/combined_dataset # path to the football dataset directory, either ./data/football_player_detection or ./data/combined_dataset (handheld + roboflow)
+    output_dir: ./models_combined_dataset/output_yolo_football
 
 training:
   model: yolov8s              # yolov8s, yolov8n, yolo26n, rtdetr-l, rtdetr-x
-  epochs: 70
+  epochs: 50
   img_size: 640
   batch: 16
   resume: false
@@ -31,6 +31,12 @@ augmentation:
 runtime:
   skip_setup: false
   skip_data_prep: false
-  validate: false
+  validate: true
   visualize: false
   make_annotations: false
+
+export: 
+  active: true
+  format: both
+  conf_thresh: 0.5
+  iou_thresh: 0.7

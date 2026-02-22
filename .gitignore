@@ -209,7 +209,11 @@ __marimo__/
 .idea
 *.csv
 
-data/
+data/*
+!data/handheld_dataset/
+data/handheld_dataset/*
+!data/handheld_dataset/*.py
+!data/handheld_dataset/*.txt
 output/
 RT-DETR/
 
@@ -224,11 +228,7 @@ RT-DETR/
 runs/
 
 # Ignore *.jpg and *.png files from training runs
-models/**/*.jpg
-models/**/*.png
-
-models/output_yolo_football/rtdetr-l/*
-models/output_yolo_football/yolo26n/*
+models/*
 
 models_without_rescaling_aug/*
 output_without_rescaling_aug/*
