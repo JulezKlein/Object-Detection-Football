@@ -13,7 +13,7 @@ paths:
     output_dir: ./models_combined_dataset/output_yolo_football
 
 training:
-  model: yolov8s              # yolov8s, yolov8n, yolo26n, rtdetr-l, rtdetr-x
+  model: yolo26s              # yolov8s, yolov8n, yolo26n, rtdetr-l, rtdetr-x
   epochs: 50
   img_size: 640
   batch: 16
