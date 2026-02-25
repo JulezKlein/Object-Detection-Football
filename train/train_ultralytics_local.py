@@ -139,7 +139,7 @@ def start_training():
         from ultralytics import RTDETR
         model = RTDETR(f"{model_name}.pt")
 
-    device = "mps" if torch.backends.mps.is_available() else "cpu"
+    device = "mps" if torch.backends.mps.is_available() else "cuda" if torch.cuda.is_available() else "cpu"
 
     close_mosaic = int(training["epochs"] * aug["close_mosaic_ratio"])
 
