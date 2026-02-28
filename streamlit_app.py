@@ -214,7 +214,7 @@ def main():
         st.error("Selected model format is not supported.")
         return
 
-    conf_threshold = st.slider("Confidence threshold", 0.0, 1.0, 0.5, 0.01)
+    conf_threshold = st.slider("Confidence threshold", 0.5, 1.0, 0.5, 0.01)
     input_source = st.radio("Input source", ["Upload", "Select from data videos"], horizontal=True)
 
     uploaded = None
