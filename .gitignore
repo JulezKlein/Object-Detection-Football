@@ -209,11 +209,16 @@ __marimo__/
 .idea
 *.csv
 
-data/*
-!data/handheld_dataset/
 data/handheld_dataset/*
 !data/handheld_dataset/*.py
 !data/handheld_dataset/*.txt
+
+data/football_player_detection/*
+!data/football_player_detection/*.txt
+
+data/combined_dataset/*
+!data/combined_dataset/*.txt
+
 output/
 RT-DETR/
 
@@ -229,8 +234,12 @@ runs/
 
 # Ignore *.jpg and *.png files from training runs
 models/*
-
-models_without_rescaling_aug/*
-output_without_rescaling_aug/*
+!models/output_combined_dataset/
+models/output_combined_dataset/*
+!models/output_combined_dataset/yolov8s/
+models/output_combined_dataset/yolov8s/*
+!models/output_combined_dataset/yolov8s/weights/
+models/output_combined_dataset/yolov8s/weights/*
+!models/output_combined_dataset/yolov8s/weights/best.onnx
 
 .DS_Store

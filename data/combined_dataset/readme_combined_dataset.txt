@@ -1,0 +1,1 @@
+This dataset contains the splits from football_player_detection and the result from processing the handheld dataset. Both must be available to create the combined dataset.

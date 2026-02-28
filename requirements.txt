@@ -1,0 +1,12 @@
+numpy
+opencv-python
+omegaconf
+ultralytics
+torch
+streamlit
+onnxruntime
+pillow
+matplotlib
+pandas
+tqdm
+coremltools
